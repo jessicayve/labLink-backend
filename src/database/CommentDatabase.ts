@@ -2,6 +2,9 @@ import { CommentWithCreatorDB,CommentDB, LikeDislikeCommentDB,COMMENT_LIKE } fro
 import { BaseDatabase } from "./BaseDatabase.js";
 
 export class CommentDatabase extends BaseDatabase {
+    findById(idToEdit: string) {
+        throw new Error("Method not implemented.");
+    }
 
     public static TABLE_COMMENTS = "comments"
     public static TABLE_LIKES_DISLIKES = "likes_dislikes"

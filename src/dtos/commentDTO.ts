@@ -22,6 +22,11 @@ export interface CreateCommentOutputDTO {
     message: string,
     content: string
 }
+export interface UpdateCommentInputDTO {
+    idToEdit: string
+    content: string
+    token: string | undefined
+}
 
 export interface LikeDislikeCommentInputDTO {
     idToLikeOrDislike: string,

@@ -1,26 +1,34 @@
 import { CommentDatabase } from "../database/CommentDatabase.js"
 import { PostDatabase } from "../database/PostDatabase.js"
-import { GetCommentOutputDTO, GetCommentInputDTO, GetCommentsInputDTO} from "../dtos/commentDTO.js"
+import {
+    GetCommentOutputDTO,
+    GetCommentsInputDTO,
+    CreateCommentInputDTO,
+    LikeDislikeCommentInputDTO,
+    UpdateCommentInputDTO
+} from "../dtos/commentDTO.js"
 import { BadRequestError } from "../errors/BadRequestError.js"
+import { NotFoundError } from "../errors/NotFoundError.js"
 import { Comment } from "../models/Comment.js"
 import { IdGenerator } from "../services/IdGenerator.js"
 import { TokenManager } from "../services/TokenManager.js"
-import {  CommentWithCreatorDB,LikeDislikeCommentDB, COMMENT_LIKE } from "../types.js"
-import { CreateCommentInputDTO } from "../dtos/commentDTO.js"
-import { NotFoundError } from "../errors/NotFoundError.js"
-import { LikeDislikeCommentInputDTO } from "../dtos/commentDTO.js"
-import { BaseDatabase } from "../database/BaseDatabase.js"
+import {
+    CommentWithCreatorDB,
+    LikeDislikeCommentDB,
+    COMMENT_LIKE
+} from "../types.js"
+
 export class CommentBusiness {
     constructor(
         private commentDatabase: CommentDatabase,
         private postDatabase: PostDatabase,
         private idGenerator: IdGenerator,
         private tokenManager: TokenManager
-    ) { }
+    ) {}
 
     public getComment = async (input: GetCommentsInputDTO): Promise<GetCommentOutputDTO> => {
-
         const { token } = input
+
         if (token === undefined) {
             throw new BadRequestError("token é necessário")
         }
@@ -35,7 +43,7 @@ export class CommentBusiness {
             await this.commentDatabase.getCommentWithCreators()
 
         const comments = commentsWithCreatorsDB.map((commentWithCreatorDB) => {
-            const comment = new Comment (
+            const comment = new Comment(
                 commentWithCreatorDB.id,
                 commentWithCreatorDB.post_id,
                 commentWithCreatorDB.creator_id,
@@ -43,31 +51,30 @@ export class CommentBusiness {
                 commentWithCreatorDB.likes,
                 commentWithCreatorDB.dislikes,
                 commentWithCreatorDB.created_at,
+                commentWithCreatorDB.updatedAt
             )
 
             return comment.toBusinessModel()
         })
 
-        const output: GetCommentOutputDTO = comments
-
-        return output
+        return comments
     }
-
 
     public createComment = async (input: CreateCommentInputDTO): Promise<void> => {
         const { postId, content, token } = input
-        
+
         if (token === undefined) {
             throw new BadRequestError("token ausente")
         }
 
         const payload = this.tokenManager.getPayload(token)
-        
+
         if (payload === null) {
             throw new BadRequestError("'token' inválido")
         }
+
         const postDBExists = await this.postDatabase.findById(postId)
-        
+
         if (postDBExists === null) {
             throw new NotFoundError("'id' não encontrado")
         }
@@ -77,6 +84,7 @@ export class CommentBusiness {
         }
 
         const newId = this.idGenerator.generate()
+        const now = new Date().toISOString()
 
         const newComment = new Comment(
             newId,
@@ -85,15 +93,14 @@ export class CommentBusiness {
             content,
             0,
             0,
-            new Date().toISOString(),
-            
+            now,
+            now
         )
 
         const newCommentDB = newComment.toDBModel()
 
         await this.commentDatabase.insertComment(newCommentDB)
     }
-
 
     public likeOrDislikeComment = async (input: LikeDislikeCommentInputDTO): Promise<void> => {
         const { idToLikeOrDislike, token, like } = input
@@ -135,11 +142,11 @@ export class CommentBusiness {
             commentWithCreatorDB.content,
             commentWithCreatorDB.likes,
             commentWithCreatorDB.dislikes,
-            commentWithCreatorDB.created_at
+            commentWithCreatorDB.created_at,
+            commentWithCreatorDB.updatedAt
         )
 
-        const likeDislikeExists = await this.commentDatabase
-            .findLikeDislike(likeDislikeDB)
+        const likeDislikeExists = await this.commentDatabase.findLikeDislike(likeDislikeDB)
 
         if (likeDislikeExists === COMMENT_LIKE.ALREADY_LIKED) {
             if (like) {
@@ -150,7 +157,6 @@ export class CommentBusiness {
                 comment.removeLike()
                 comment.addDislike()
             }
-
         } else if (likeDislikeExists === COMMENT_LIKE.ALREADY_DISLIKED) {
             if (like) {
                 await this.commentDatabase.updateLikeDislike(likeDislikeDB)
@@ -160,17 +166,58 @@ export class CommentBusiness {
                 await this.commentDatabase.removeLikeDislike(likeDislikeDB)
                 comment.removeDislike()
             }
-
         } else {
             await this.commentDatabase.likeDislikeComment(likeDislikeDB)
-
             like ? comment.addLike() : comment.addDislike()
         }
 
         const updatedCommentDB = comment.toDBModel()
-        console.log(updatedCommentDB);
-        
+
         await this.commentDatabase.updateComment(updatedCommentDB, idToLikeOrDislike)
     }
-    
+
+    public updateComment = async (input: UpdateCommentInputDTO): Promise<void> => {
+        const { idToEdit, content, token } = input
+
+        if (token === undefined) {
+            throw new BadRequestError("token ausente")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if (payload === null) {
+            throw new BadRequestError("'token' inválido")
+        }
+
+        if (typeof content !== "string") {
+            throw new BadRequestError("'content' deve ser uma string")
+        }
+
+        const commentDB = await this.commentDatabase.findById(idToEdit)
+
+        if (!commentDB) {
+            throw new NotFoundError("comentário não encontrado")
+        }
+
+        if (commentDB.creator_id !== payload.id) {
+            throw new BadRequestError("somente o criador do comentário pode editá-lo")
+        }
+
+        const updatedAt = new Date().toISOString()
+
+        const comment = new Comment(
+            commentDB.id,
+            commentDB.post_id,
+            commentDB.creator_id,
+            content,
+            commentDB.likes,
+            commentDB.dislikes,
+            commentDB.created_at,
+            updatedAt
+        )
+
+        const updatedCommentDB = comment.toDBModel()
+
+        await this.commentDatabase.updateComment(updatedCommentDB, idToEdit)
+    }
 }

@@ -15,9 +15,11 @@ const commentController = new CommentController(
         new PostDatabase(),
         new IdGenerator(),
         new TokenManager(),
+        
     )
 )
 
 commentRouter.get("/", commentController.getComment)
 commentRouter.post("/:id", commentController.CreateComment)
 commentRouter.put("/:id/like", commentController.likeDislike)
+commentRouter.put("/:id", commentController.updateComment)

@@ -76,5 +76,27 @@ export class CommentController {
             }
         }
     }
+
+    public updateComment = async (req: Request, res: Response) => {
+    try {
+        const input = {
+            idToEdit: req.params.id,
+            content: req.body.content,
+            token: req.headers.authorization
+        }
+
+        await this.commentBusiness.updateComment(input)
+
+        res.status(200).send({ message: "Comentário atualizado com sucesso" })
+    } catch (error) {
+        console.log(error)
+
+        if (error instanceof BaseError) {
+            res.status(error.statusCode).send(error.message)
+        } else {
+            res.status(500).send("Erro inesperado")
+        }
+    }
+}
     
 }   

@@ -76,7 +76,8 @@ export interface CommentDB {
     content: string,
     likes: number,
     dislikes: number,
-    created_at: string
+    created_at: string,
+    updatedAt: string
 }
 
 
@@ -91,7 +92,8 @@ export interface CommentModel {
     content: string,
     likes: number,
     dislikes: number,
-    createdAt: string
+    createdAt: string,
+    updatedAt: string
 }
 
 export interface LikeDislikeCommentDB {
