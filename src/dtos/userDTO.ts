@@ -1,4 +1,4 @@
-import { UserModel } from "../types"
+import { UserModel } from "../types.js"
 
 
 

@@ -1,7 +1,7 @@
 import {Request, Response} from "express"
-import { UserBusiness } from "../business/UserBusiness"
-import { GetUsersInput, LoginInputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO"
-import { BaseError } from "../errors/BaseError"
+import { UserBusiness } from "../business/UserBusiness.js"
+import { GetUsersInput, LoginInputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO.js"
+import { BaseError } from "../errors/BaseError.js"
 
 export class UserController {
     constructor(

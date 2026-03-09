@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PostBusiness } from "../business/PostBusiness";
-import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO, LikesDislikesInputDTO } from "../dtos/postDTO";
-import { BaseError } from "../errors/BaseError";
+import { PostBusiness } from "../business/PostBusiness.js";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO, LikesDislikesInputDTO } from "../dtos/postDTO.js";
+import { BaseError } from "../errors/BaseError.js";
 
 export class PostController {
     constructor(
@@ -55,7 +55,7 @@ export class PostController {
         try {
 
             const input: EditPostInputDTO = {
-                idToEdit: req.params.id,
+                idToEdit: String(req.params.id),
                 content: req.body.content,
                 token: req.headers.authorization
             }
@@ -77,7 +77,7 @@ export class PostController {
     public deletePost = async (req: Request, res: Response) => {
         try {
             const input: DeletePostInputDTO = {
-                idToDelete: req.params.id,
+                idToDelete: String(req.params.id),
                 token: req.headers.authorization
             }
 
@@ -99,7 +99,7 @@ export class PostController {
         try {
 
             const input: LikesDislikesInputDTO = {
-                idToLikeOrDislike: req.params.id,
+                idToLikeOrDislike: String(req.params.id),
                 token: req.headers.authorization,
                 like: req.body.like
             }

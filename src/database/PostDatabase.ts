@@ -1,5 +1,5 @@
-import { LikeDislikeDB, PostDB, PostWithCreatorDB, POST_LIKE } from "../types";
-import { BaseDatabase } from "./BaseDatabase";
+import { LikeDislikeDB, PostDB, PostWithCreatorDB, POST_LIKE } from "../types.js";
+import { BaseDatabase } from "./BaseDatabase.js";
 
 export class PostDatabase extends BaseDatabase {
     public static TABLE_POSTS = "posts"

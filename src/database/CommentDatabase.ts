@@ -1,5 +1,5 @@
-import { CommentWithCreatorDB,CommentDB, LikeDislikeCommentDB,COMMENT_LIKE } from "../types";
-import { BaseDatabase } from "./BaseDatabase";
+import { CommentWithCreatorDB,CommentDB, LikeDislikeCommentDB,COMMENT_LIKE } from "../types.js";
+import { BaseDatabase } from "./BaseDatabase.js";
 
 export class CommentDatabase extends BaseDatabase {
 

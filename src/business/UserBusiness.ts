@@ -1,12 +1,12 @@
-import { UserDatabase } from "../database/UserDatabase"
-import { GetUsersInput, GetUsersOutput, LoginInputDTO, LoginOutputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO";
-import { BadRequestError } from "../errors/BadRequestError";
-import { NotFoundError } from "../errors/NotFoundError";
-import { User } from "../models/User";
-import { HashManager } from "../services/HashManager";
-import { IdGenerator } from "../services/IdGenerator";
-import { TokenManager } from "../services/TokenManager";
-import { TokenPayload, UserDB, USER_ROLES } from "../types";
+import { UserDatabase } from "../database/UserDatabase.js"
+import { GetUsersInput, GetUsersOutput, LoginInputDTO, LoginOutputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO.js";
+import { BadRequestError } from "../errors/BadRequestError.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
+import { User } from "../models/User.js";
+import { HashManager } from "../services/HashManager.js";
+import { IdGenerator } from "../services/IdGenerator.js";
+import { TokenManager } from "../services/TokenManager.js";
+import { TokenPayload, UserDB, USER_ROLES } from "../types.js";
 
 export class UserBusiness {
     constructor(

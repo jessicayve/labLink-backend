@@ -1,4 +1,4 @@
-import { PostDB, PostModel } from "../types";
+import { PostDB, PostModel } from "../types.js";
 
 export class Post {
     constructor(

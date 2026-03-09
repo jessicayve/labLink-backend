@@ -1,4 +1,4 @@
-import { CommentDB, CommentModel } from "../types"
+import { CommentDB, CommentModel } from "../types.js"
 
 export class Comment {
     constructor(

@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
-import { CommentBusiness } from "../business/CommentBusiness"
-import {  GetCommentsInputDTO} from "../dtos/commentDTO"
-import { BaseError } from "../errors/BaseError"
-import { CreateCommentInputDTO } from "../dtos/commentDTO"
-import { LikeDislikeCommentInputDTO } from "../dtos/commentDTO"
+import { CommentBusiness } from "../business/CommentBusiness.js"
+import {  GetCommentsInputDTO} from "../dtos/commentDTO.js"
+import { BaseError } from "../errors/BaseError.js"
+import { CreateCommentInputDTO } from "../dtos/commentDTO.js"
+import { LikeDislikeCommentInputDTO } from "../dtos/commentDTO.js"
 export class CommentController {
     constructor(
         private commentBusiness: CommentBusiness,
@@ -34,7 +34,7 @@ export class CommentController {
     public CreateComment = async (req: Request, res: Response) => {
         try {
             const input: CreateCommentInputDTO = {
-                postId: req.params.id,
+                postId: String(req.params.id),
                 token: req.headers.authorization,
                 content: req.body.content,
             }
@@ -58,7 +58,7 @@ export class CommentController {
         try {
 
             const input: LikeDislikeCommentInputDTO = {
-                idToLikeOrDislike: req.params.id,
+                idToLikeOrDislike: String(req.params.id),
                 token: req.headers.authorization,
                 like: req.body.like
             }

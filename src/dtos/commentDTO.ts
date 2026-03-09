@@ -1,4 +1,4 @@
-import { CommentModel } from "../types"
+import { CommentModel } from "../types.js"
 
 export interface GetCommentInputDTO {
     
