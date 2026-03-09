@@ -117,8 +117,8 @@ export class Post {
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
             creator: {
-                creatorId: this.creatorId,
-                creatorName: this.creatorName
+                id: this.creatorId,
+                name: this.creatorName
             }
         }
     }
