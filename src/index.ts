@@ -17,6 +17,10 @@ app.listen(Number(process.env.PORT), () => {
     console.log(`Servidor rodando na porta ${Number(process.env.PORT)}`)
 })
 
+app.get("/health", (req, res) => {
+  res.status(200).send({ ok: true })
+})
+
 app.use("/users", userRouter)
 app.use("/posts", postRouter)
 app.use("/comments", commentRouter)

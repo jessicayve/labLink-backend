@@ -8,6 +8,7 @@
 "scripts": {
   "dev": "tsx watch src/index.ts",
   "build": "tsc",
+  "bootstrap-db": "node dist/scripts/bootstrapDb.js",
   "start": "node dist/index.js",
   "migrate:make": "knex migrate:make --knexfile knexfile.ts -x ts",
   "migrate:latest": "knex migrate:latest --knexfile knexfile.ts",
